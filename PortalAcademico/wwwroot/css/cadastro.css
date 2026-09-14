@@ -1,0 +1,690 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Container principal - Split Screen */
+.container {
+    display: flex;
+    width: 100%;
+    max-width: 1280px;
+    min-height: 720px;
+    background: white;
+    border-radius: 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    margin: 20px;
+}
+
+/* ========== LADO ESQUERDO - BRANDING INSTITUCIONAL ========== */
+.brand-section {
+    flex: 1;
+    background: linear-gradient(135deg, #0a2b4e 0%, #1a4a7a 50%, #2c6fd1 100%);
+    padding: 48px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.brand-section::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -30%;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+}
+
+.brand-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4CAF50, #2c6fd1, #4CAF50);
+}
+
+.brand-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    width: 100%;
+}
+
+.university-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 60px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.university-badge h2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.university-badge p {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.logo-icon {
+    background: rgba(255,255,255,0.15);
+    padding: 10px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-content h1 {
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+}
+
+.brand-content > p {
+    font-size: 16px;
+    line-height: 1.5;
+    opacity: 0.85;
+    margin-bottom: 40px;
+    max-width: 380px;
+}
+
+.features {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.feature-icon {
+    font-size: 20px;
+    background: rgba(255,255,255,0.1);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.stats {
+    display: flex;
+    gap: 32px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-number {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* ========== LADO DIREITO - FORMULÁRIO ========== */
+.form-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: white;
+    overflow-y: auto;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 480px;
+}
+
+.form-header {
+    margin-bottom: 28px;
+}
+
+.form-header h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.form-header p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Mensagens */
+.success-message {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #059669;
+    animation: slideDown 0.3s ease;
+}
+
+.success-message.show {
+    display: flex;
+}
+
+.error-message {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #dc2626;
+    animation: slideDown 0.3s ease;
+}
+
+.error-message.show {
+    display: flex;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form row */
+.form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 0;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+.input-group.half {
+    flex: 1;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    font-size: 18px;
+    color: #999;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.input-wrapper input,
+.course-select {
+    width: 100%;
+    padding: 12px 14px 12px 44px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+    background: #fafbfc;
+}
+
+.course-select {
+    appearance: none;
+    cursor: pointer;
+    background: #fafbfc;
+    color: #333;
+}
+
+.course-select option {
+    padding: 10px;
+}
+
+.course-select optgroup {
+    font-weight: 600;
+    color: #1a5bbf;
+    background: #f8fafc;
+}
+
+.select-arrow {
+    position: absolute;
+    right: 14px;
+    font-size: 12px;
+    color: #999;
+    pointer-events: none;
+}
+
+.input-wrapper input:focus,
+.course-select:focus {
+    outline: none;
+    border-color: #2c6fd1;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(44, 111, 209, 0.1);
+}
+
+.input-hint {
+    display: block;
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 6px;
+}
+
+/* Password strength */
+.password-strength {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.strength-bar {
+    flex: 1;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.strength-bar.weak {
+    background: #dc2626;
+}
+
+.strength-bar.medium {
+    background: #f59e0b;
+}
+
+.strength-bar.strong {
+    background: #10b981;
+}
+
+.strength-bar.very-strong {
+    background: #059669;
+}
+
+/* Toggle password */
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    z-index: 1;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+}
+
+/* Terms */
+.terms {
+    margin-bottom: 24px;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #555;
+}
+
+.checkbox input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #2c6fd1;
+}
+
+.checkbox a {
+    color: #2c6fd1;
+    text-decoration: none;
+}
+
+.checkbox a:hover {
+    text-decoration: underline;
+}
+
+/* Botão de cadastro */
+.register-button {
+    width: 100%;
+    background: #2c6fd1;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.register-button:hover {
+    background: #1a5bbf;
+    transform: translateY(-1px);
+}
+
+.register-button:active {
+    transform: translateY(0);
+}
+
+.register-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Divisor */
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background: #e2e8f0;
+}
+
+.divider span {
+    background: white;
+    padding: 0 12px;
+    position: relative;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+/* Botões sociais */
+.social-login {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 11px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    color: #334155;
+}
+
+.social-btn:hover {
+    border-color: #2c6fd1;
+    background: #f8fafc;
+    transform: translateY(-1px);
+}
+
+.social-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Login link */
+.login-link {
+    text-align: center;
+}
+
+.login-link p {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.login-link a {
+    color: #2c6fd1;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* Loading spinner */
+.loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Fade out */
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+.container.fade-out {
+    animation: fadeOut 0.4s ease forwards;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+        max-width: 550px;
+        min-height: auto;
+    }
+    
+    .brand-section {
+        padding: 40px;
+    }
+    
+    .brand-content h1 {
+        font-size: 32px;
+    }
+    
+    .university-badge {
+        margin-bottom: 40px;
+    }
+    
+    .form-section {
+        padding: 32px;
+    }
+    
+    .stats {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 580px) {
+    .brand-section {
+        padding: 32px;
+    }
+    
+    .form-section {
+        padding: 24px;
+    }
+    
+    .brand-content h1 {
+        font-size: 28px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+.loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.password-strength {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.strength-bar {
+    flex: 1;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 4px;
+}
+
+.strength-bar.weak { background: #dc2626; }
+.strength-bar.medium { background: #f59e0b; }
+.strength-bar.strong { background: #10b981; }
+.strength-bar.very-strong { background: #059669; }
+/* ========================================= */
+/* RESPONSIVIDADE - CELULARES E TABLETS      */
+/* ========================================= */
+@media (max-width: 900px) {
+    /* Corrige o erro da tela cortada não deixando o navegador centralizar forçado */
+    body {
+        align-items: flex-start;
+        padding: 20px 10px;
+        height: auto;
+    }
+    
+    .container {
+        flex-direction: column;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 100%;
+        min-height: auto;
+        height: auto;
+    }
+    
+    /* Remove o flex: 1 que esticava as seções de forma errada */
+    .brand-section, .form-section {
+        flex: none;
+        padding: 30px 20px;
+        width: 100%;
+    }
+    
+    .brand-content h1 {
+        font-size: 28px; /* Reduz a fonte do título no celular */
+    }
+    
+    .university-badge {
+        margin-bottom: 30px;
+    }
+    
+    /* Esconde recursos extras para focar no formulário */
+    .features, .testimonials {
+        display: none; 
+    }
+    
+    .form-container {
+        max-width: 100%;
+    }
+    
+    /* Coloca os campos lado a lado em uma coluna só (se houver) */
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

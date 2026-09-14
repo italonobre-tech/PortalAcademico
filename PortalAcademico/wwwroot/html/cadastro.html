@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro | Portal Acadêmico</title>
+    <!-- Rota corrigida para a pasta css -->
+    <link rel="stylesheet" href="/css/cadastro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="brand-section">
+            <div class="brand-content">
+                <div class="university-badge">
+                    <div class="logo-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+                            <path d="M12 3L2 9L12 15L22 9L12 3Z" stroke="white" fill="rgba(255,255,255,0.2)" />
+                            <path d="M2 15L12 21L22 15" stroke="white" fill="none" />
+                            <path d="M2 12L12 18L22 12" stroke="white" fill="none" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>Portal Acadêmico</h2>
+                        <p>Centro Universitário</p>
+                    </div>
+                </div>
+                <h1>Crie sua<br>conta agora</h1>
+                <p>Junte-se a milhares de alunos e comece sua jornada acadêmica.</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Criar conta</h2>
+                    <p>Preencha os campos abaixo para se cadastrar</p>
+                </div>
+
+                <div class="success-message" id="successMessage">
+                    <span>✅</span>
+                    <span id="successText">Cadastro realizado com sucesso!</span>
+                </div>
+
+                <div class="error-message" id="errorMessage">
+                    <span>⚠️</span>
+                    <span id="errorText">Erro ao realizar cadastro</span>
+                </div>
+
+                <form id="registerForm">
+                    <div class="form-row">
+                        <div class="input-group half">
+                            <label>Nome</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" id="firstName" placeholder="Digite seu nome">
+                            </div>
+                        </div>
+                        <div class="input-group half">
+                            <label>Sobrenome</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" id="lastName" placeholder="Digite seu sobrenome">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>E-mail</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input type="email" id="email" placeholder="seuemail@universidade.edu.br">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Usuário</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔑</span>
+                            <input type="text" id="username" placeholder="Escolha um nome de usuário">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Senha</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="password" placeholder="Crie uma senha">
+                            <button type="button" class="toggle-password" data-target="password">👁️</button>
+                        </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Confirmar senha</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="confirmPassword" placeholder="Confirme sua senha">
+                            <button type="button" class="toggle-password" data-target="confirmPassword">👁️</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Curso</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🎓</span>
+                            <select id="courseSelect" class="course-select">
+                                <option value="">Selecione seu curso</option>
+                            </select>
+                            <span class="select-arrow">▼</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Período</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📅</span>
+                            <select id="semester" class="course-select">
+                                <option value="">Selecione o período</option>
+                                <option value="1">1º Período</option>
+                                <option value="2">2º Período</option>
+                                <option value="3">3º Período</option>
+                                <option value="4">4º Período</option>
+                                <option value="5">5º Período</option>
+                                <option value="6">6º Período</option>
+                                <option value="7">7º Período</option>
+                                <option value="8">8º Período</option>
+                            </select>
+                            <span class="select-arrow">▼</span>
+                        </div>
+                    </div>
+
+                    <div class="terms">
+                        <label class="checkbox">
+                            <input type="checkbox" id="acceptTerms">
+                            <span>Li e aceito os <a href="#">Termos de Uso</a></span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="register-button" id="registerBtn">
+                        Criar conta
+                    </button>
+                </form>
+
+                <div class="login-link">
+                    <p>Já tem uma conta? <a href="/login.html">Fazer login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Rota corrigida para a pasta js -->
+    <script src="/js/cadastro.js"></script>
+</body>
+</html>

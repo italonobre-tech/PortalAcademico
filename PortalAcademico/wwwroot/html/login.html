@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Portal Acadêmico</title>
+    <!-- Rota para a pasta css -->
+    <link rel="stylesheet" href="/css/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Lado esquerdo - Branding Institucional -->
+        <div class="brand-section">
+            <div class="brand-content">
+                <div class="university-badge">
+                    <div class="logo-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+                            <path d="M12 3L2 9L12 15L22 9L12 3Z" stroke="white" fill="rgba(255,255,255,0.2)" />
+                            <path d="M2 15L12 21L22 15" stroke="white" fill="none" />
+                            <path d="M2 12L12 18L22 12" stroke="white" fill="none" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>Portal Acadêmico</h2>
+                        <p>Centro Universitário</p>
+                    </div>
+                </div>
+
+                <h1>Bem-vindo de<br>volta</h1>
+                <p>Acesse sua conta para continuar seus estudos e acompanhar seu progresso acadêmico.</p>
+
+                <div class="features">
+                    <div class="feature">
+                        <span class="feature-icon">📚</span>
+                        <span>+50 cursos disponíveis</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">🎓</span>
+                        <span>Trilhas personalizadas</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">📊</span>
+                        <span>Acompanhamento em tempo real</span>
+                    </div>
+                </div>
+
+                <div class="testimonials">
+                    <div class="testimonial">
+                        <div class="stars">★★★★★</div>
+                        <p>"Plataforma incrível, me ajudou muito no nivelamento!"</p>
+                        <span>- Ana Silva, Biomedicina</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lado direito - Formulário de Login -->
+        <div class="form-section">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Acessar conta</h2>
+                    <p>Insira suas credenciais para continuar</p>
+                </div>
+
+                <div class="success-message" id="successMessage">
+                    <span class="success-icon">✅</span>
+                    <span id="successText">Cadastro realizado com sucesso! Faça seu login.</span>
+                </div>
+
+                <div class="error-message" id="errorMessage">
+                    <span class="error-icon">⚠️</span>
+                    <span id="errorText">Credenciais inválidas</span>
+                </div>
+
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="username">Usuário ou Email</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="username" placeholder="Digite seu usuário ou email" autocomplete="off" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Senha</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="password" placeholder="Digite sua senha" required>
+                            <button type="button" class="toggle-password" id="togglePassword">👁️</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="courseSelect">Curso</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🎓</span>
+                            <select id="courseSelect" class="course-select" required>
+                                <option value="">Selecione seu curso</option>
+                            </select>
+                            <span class="select-arrow">▼</span>
+                        </div>
+                    </div>
+
+                    <div class="login-options">
+                        <label class="checkbox">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Lembrar de mim</span>
+                        </label>
+                        <a href="#" id="forgotPassword" class="forgot-link">Esqueceu a senha?</a>
+                    </div>
+
+                    <button type="submit" class="login-button" id="loginBtn">
+                        Entrar
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>ou</span>
+                </div>
+
+                <div class="social-login">
+                    <button type="button" class="social-btn google" id="googleLogin">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path fill="#EA4335" d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582l3.29-3.29A11.98 11.98 0 0 0 12 .909C6.58.909 2.021 4.3.172 8.745l5.094 3.02z" />
+                            <path fill="#34A853" d="M22.727 12.182c0-.745-.068-1.455-.199-2.136H12v4.09h6.054c-.264 1.432-1.059 2.641-2.254 3.45l3.484 2.713c2.036-1.869 3.443-4.632 3.443-8.117z" />
+                            <path fill="#FBBC05" d="M5.266 14.235a7.086 7.086 0 0 1-.363-2.235c0-.777.13-1.527.363-2.235L.172 6.745A11.96 11.96 0 0 0 0 12c0 1.936.464 3.764 1.277 5.364l4.989-3.129z" />
+                            <path fill="#4285F4" d="M12 23.091c3.273 0 6.018-1.073 8.023-2.91l-3.484-2.713c-1.018.686-2.328 1.091-4.539 1.091-2.591 0-4.79-1.745-5.573-4.132l-5.094 3.02C2.021 19.7 6.58 23.091 12 23.091z" />
+                        </svg>
+                        Google
+                    </button>
+                </div>
+
+                <div class="register-link">
+                    <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loadingModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); align-items: center; justify-content: center; z-index: 10000;">
+        <div style="background: white; border-radius: 32px; padding: 40px; text-align: center; max-width: 350px;">
+            <div style="width: 60px; height: 60px; border: 4px solid #e2e8f0; border-top-color: #3175db; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+            <h3 id="loadingTitle" style="margin-bottom: 10px;">Conectando</h3>
+            <p id="loadingText" style="color: #666;">Aguarde...</p>
+        </div>
+        <style>
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </div>
+
+    <!-- Firebase SDK e Lógica da Aplicação -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+        // VERIFICAÇÃO DE SESSÃO ATIVA
+        const activeUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+        if (activeUser && activeUser !== 'null') {
+            window.location.href = 'index.html';
+        }
+
+        // Configurações do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBh4UKYr60r9cFOct04nbMQgEBJd6Hz4tk",
+            authDomain: "portal-academico-da908.firebaseapp.com",
+            projectId: "portal-academico-da908",
+            storageBucket: "portal-academico-da908.firebasestorage.app",
+            messagingSenderId: "599813427860",
+            appId: "1:599813427860:web:bf315232590dc268ef5a81",
+            measurementId: "G-WQEM5D69ZW"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Provedor Google
+        const googleProvider = new GoogleAuthProvider();
+        googleProvider.addScope('email');
+        googleProvider.addScope('profile');
+
+        function showLoading(title, text) {
+            const modal = document.getElementById('loadingModal');
+            document.getElementById('loadingTitle').textContent = title;
+            document.getElementById('loadingText').textContent = text;
+            modal.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingModal').style.display = 'none';
+        }
+
+        function saveUserAndRedirect(userData, isPermanent = true) {
+            if (isPermanent) {
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+            } else {
+                sessionStorage.setItem('currentUser', JSON.stringify(userData));
+            }
+
+            document.querySelector('.container').style.transition = 'opacity 0.4s';
+            document.querySelector('.container').style.opacity = '0';
+
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        }
+
+        // Carregar opções do select de cursos
+        function loadCourses() {
+            const courseSelect = document.getElementById('courseSelect');
+            const courses = ['biomedicina', 'enfermagem', 'psicologia', 'civil', 'administracao', 'contabilidade', 'direito'];
+            courseSelect.innerHTML = '<option value="">Selecione seu curso</option>' +
+                courses.map(c => `<option value="${c}">${c.toUpperCase()}</option>`).join('');
+        }
+        loadCourses();
+
+        // Visibilidade de Senha
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const passwordInput = document.getElementById('password');
+                passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+                btn.textContent = passwordInput.type === 'password' ? '👁️' : '🙈';
+            });
+        });
+
+        // FORMULÁRIO DE LOGIN (Local e Admin)
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const userInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+            const courseInput = document.getElementById('courseSelect').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            const errorMsg = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            const successMsg = document.getElementById('successMessage');
+
+            const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const foundUser = users.find(u => (u.username === userInput || u.email === userInput) && u.password === passwordInput);
+
+            if (foundUser || (userInput === 'admin' && passwordInput === '123456')) {
+                showLoading('Entrando', 'Verificando suas credenciais...');
+
+                const userToSave = foundUser || {
+                    firstName: 'Aluno',
+                    lastName: 'Demonstração',
+                    fullName: 'Aluno Demonstração',
+                    email: 'aluno@universidade.edu.br',
+                    username: 'admin',
+                    course: courseInput || 'biomedicina',
+                    courseName: courseInput ? courseInput.toUpperCase() : 'Biomedicina',
+                    semester: '1'
+                };
+
+                if (courseInput) {
+                    userToSave.course = courseInput;
+                    userToSave.courseName = courseInput.toUpperCase();
+                }
+
+                setTimeout(() => {
+                    hideLoading();
+                    successMsg.classList.add('show');
+                    saveUserAndRedirect(userToSave, rememberMe);
+                }, 800);
+
+            } else {
+                errorText.textContent = 'Usuário ou senha incorretos.';
+                errorMsg.classList.add('show');
+                setTimeout(() => errorMsg.classList.remove('show'), 3500);
+            }
+        });
+
+        // LOGIN COM GOOGLE
+        document.getElementById('googleLogin').addEventListener('click', async () => {
+            showLoading('Conectando ao Google', 'Abrindo janela de autenticação...');
+
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                hideLoading();
+
+                const user = result.user;
+                const googleUserData = {
+                    id: user.uid,
+                    name: user.displayName || 'Usuário',
+                    email: user.email,
+                    username: user.email?.split('@')[0] || 'usuario',
+                    photoURL: user.photoURL || '',
+                    provider: 'google',
+                    firstName: user.displayName?.split(' ')[0] || 'Usuário',
+                    lastName: user.displayName?.split(' ')[1] || '',
+                    course: document.getElementById('courseSelect').value || 'biomedicina',
+                    semester: '1'
+                };
+
+                saveUserAndRedirect(googleUserData, true);
+            } catch (error) {
+                hideLoading();
+                let mensagem = 'Erro ao conectar com Google. Tente novamente.';
+                if (error.code === 'auth/popup-blocked') {
+                    mensagem = 'Popup bloqueado! Permita popups para este site.';
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    mensagem = 'Domínio não autorizado! Adicione o domínio no Firebase Console.';
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    mensagem = 'Janela fechada antes de completar o login.';
+                }
+
+                const errorMsg = document.getElementById('errorMessage');
+                document.getElementById('errorText').textContent = mensagem;
+                errorMsg.classList.add('show');
+                setTimeout(() => errorMsg.classList.remove('show'), 5000);
+            }
+        });
+
+        // Recuperação de senha
+        document.getElementById('forgotPassword').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Entre em contato com o suporte: suporte@portalacademico.com');
+        });
+    </script>
+</body>
+</html>
