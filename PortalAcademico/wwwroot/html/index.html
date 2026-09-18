@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- CSS Principal -->
-    <link rel="stylesheet" href="css/index.css">
+    <!-- CSS Principal (Corrigido com ../) -->
+    <link rel="stylesheet" href="../css/index.css">
 </head>
 <body>
 
@@ -321,13 +321,12 @@
         </div>
     </div>
 
-    <!-- Script Principal -->
-    <script src="js/index.js"></script>
-    <!-- Final do seu index.html -->
+    <!-- Script Principal (Corrigido com ../) -->
+    <script src="../js/index.js"></script>
+
+    <!-- Script Inline da Página -->
     <script>
-        // ==========================================
         // VERIFICAÇÃO DE AUTENTICAÇÃO (SESSION GUARD)
-        // ==========================================
         const storedUserRaw = localStorage.getItem('currentUser');
 
         if (!storedUserRaw || storedUserRaw === 'null') {
@@ -337,15 +336,13 @@
         let currentUser = JSON.parse(storedUserRaw);
 
         document.addEventListener('DOMContentLoaded', () => {
-            initNavigation();
-            initUserProfile();
-            initTrilhas();
-            initQuickSettings();
+            if (typeof initNavigation === 'function') initNavigation();
+            if (typeof initUserProfile === 'function') initUserProfile();
+            if (typeof initTrilhas === 'function') initTrilhas();
+            if (typeof initQuickSettings === 'function') initQuickSettings();
         });
 
-        // ==========================================
         // PERFIL & LOGOUT CORRIGIDO
-        // ==========================================
         function initUserProfile() {
             updateProfileUI();
 
