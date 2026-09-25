@@ -1,20 +1,21 @@
 // ==========================================
-// LOGIN.JS - VERSÃO SIMPLIFICADA
+// LOGIN.JS - VERSÃO LOCAL (SEM FIREBASE)
 // ==========================================
 
-const API_CONFIG = {
-    USE_MOCK_API: true
-};
-
 document.addEventListener('DOMContentLoaded', () => {
-    initializeLoginSystem();
-});
+    // 1. Se já está logado, vai pro index
+    const activeUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+    if (activeUser && activeUser !== 'null' && activeUser !== 'undefined') {
+        window.location.href = 'index.html';
+        return;
+    }
 
-async function initializeLoginSystem() {
-    const loginBtn = document.getElementById('loginBtn');
+    // 2. Elementos
+    const form = document.getElementById('loginForm');
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const courseSelect = document.getElementById('courseSelect');
+    const loginBtn = document.getElementById('loginBtn');
     const errorMessage = document.getElementById('errorMessage');
     const errorText = document.getElementById('errorText');
     const successMessage = document.getElementById('successMessage');
@@ -23,166 +24,100 @@ async function initializeLoginSystem() {
     const rememberMe = document.getElementById('rememberMe');
     const forgotLink = document.getElementById('forgotPassword');
 
-    if (rememberMe) {
-        rememberMe.disabled = true;
-        rememberMe.style.opacity = '0.5';
-    }
+    // 3. Carrega cursos
+    const cursos = ['biomedicina', 'enfermagem', 'psicologia', 'civil', 'administracao', 'contabilidade', 'direito'];
+    courseSelect.innerHTML = '<option value="">Selecione seu curso</option>' +
+        cursos.map(c => `<option value="${c}">${c.toUpperCase()}</option>`).join('');
 
-    function validateRememberMe() {
-        const username = usernameInput?.value.trim();
-        const password = passwordInput?.value.trim();
-        const course = courseSelect?.value;
-        const allFieldsFilled = username && password && course;
-
-        if (rememberMe) {
-            if (allFieldsFilled) {
-                rememberMe.disabled = false;
-                rememberMe.style.opacity = '1';
-                rememberMe.style.cursor = 'pointer';
-            } else {
-                rememberMe.disabled = true;
-                rememberMe.style.opacity = '0.5';
-                rememberMe.checked = false;
-            }
-        }
-    }
-
-    if (usernameInput) usernameInput.addEventListener('input', validateRememberMe);
-    if (passwordInput) passwordInput.addEventListener('input', validateRememberMe);
-    if (courseSelect) courseSelect.addEventListener('change', validateRememberMe);
-
-    await loadCourses(courseSelect);
-    await checkAutoLogin();
-
-    if (loginBtn) {
-        loginBtn.addEventListener('click', async () => {
-            const username = usernameInput?.value.trim();
-            const password = passwordInput?.value.trim();
-            const course = courseSelect?.value || '';
-
-            if (!username) {
-                showError('Preencha o usuário!', errorMessage, errorText, successMessage);
-                usernameInput.focus();
-                return;
-            }
-            if (!password) {
-                showError('Preencha a senha!', errorMessage, errorText, successMessage);
-                passwordInput.focus();
-                return;
-            }
-            if (!course) {
-                showError('Selecione seu curso!', errorMessage, errorText, successMessage);
-                courseSelect.focus();
-                return;
-            }
-
-            await performLogin(username, password, course, rememberMe?.checked,
-                errorMessage, errorText, successMessage, successText);
-        });
-    }
-
-    if (togglePassword && passwordInput) {
+    // 4. Toggle senha
+    if (togglePassword) {
         togglePassword.addEventListener('click', () => {
             passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
             togglePassword.textContent = passwordInput.type === 'password' ? '👁️' : '🙈';
         });
     }
 
+    // 5. Esqueceu a senha
     if (forgotLink) {
-        forgotLink.addEventListener('click', async (e) => {
+        forgotLink.addEventListener('click', (e) => {
             e.preventDefault();
-            const email = prompt('Digite seu e-mail para recuperar a senha:');
-            if (email && email.includes('@')) {
-                alert(`E-mail de recuperação enviado para ${email}!`);
-            } else if (email) {
-                alert('E-mail inválido!');
-            }
+            alert('Entre em contato com o suporte: suporte@portalacademico.com');
         });
     }
-}
 
-async function performLogin(username, password, course, remember, errorMsg, errorTxt, successMsg, successTxt) {
-    const btn = document.getElementById('loginBtn');
-    btn.disabled = true;
-    btn.innerHTML = 'Entrando <span class="loading"></span>';
+    // 6. Funções de mensagem
+    function showError(msg) {
+        errorText.textContent = msg;
+        errorMessage.classList.add('show');
+        if (successMessage) successMessage.classList.remove('show');
+        setTimeout(() => errorMessage.classList.remove('show'), 4000);
+    }
 
-    try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+    function showSuccess(msg) {
+        successText.textContent = msg;
+        successMessage.classList.add('show');
+        if (errorMessage) errorMessage.classList.remove('show');
+    }
 
-        const localUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-        const user = localUsers.find(u => (u.username === username || u.email === username) && u.password === password);
+    // 7. SUBMIT (COM preventDefault GARANTIDO)
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-        if (user) {
-            const userData = {
-                id: user.id || Date.now(),
-                name: user.firstName || username.split('@')[0],
-                email: user.email || username,
-                username: user.username,
-                course: course || user.course,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                semester: user.semester || '1',
-                courseName: user.courseName || course
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+        const course = courseSelect.value;
+
+        if (!username) { showError('Preencha o usuário!'); usernameInput.focus(); return; }
+        if (!password) { showError('Preencha a senha!'); passwordInput.focus(); return; }
+        if (!course) { showError('Selecione seu curso!'); courseSelect.focus(); return; }
+
+        // Busca nos usuários cadastrados
+        const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+        const foundUser = users.find(u =>
+            (u.username === username || u.email === username) && u.password === password
+        );
+
+        // Admin de teste
+        const isAdmin = (username === 'admin' && password === '123456');
+
+        if (foundUser || isAdmin) {
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'Entrando...';
+
+            const userData = foundUser ? {
+                id: foundUser.id,
+                firstName: foundUser.firstName,
+                lastName: foundUser.lastName,
+                name: foundUser.fullName || foundUser.firstName,
+                email: foundUser.email,
+                username: foundUser.username,
+                course: course || foundUser.course,
+                courseName: (course || foundUser.course || '').toUpperCase(),
+                semester: foundUser.semester || '1'
+            } : {
+                id: Date.now(),
+                firstName: 'Aluno',
+                lastName: 'Admin',
+                name: 'Aluno Admin',
+                email: 'admin@portal.com',
+                username: 'admin',
+                course: course,
+                courseName: course.toUpperCase(),
+                semester: '1'
             };
 
-            if (remember) {
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-            } else {
-                sessionStorage.setItem('currentUser', JSON.stringify(userData));
-            }
+            // Sempre salva em localStorage
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            sessionStorage.removeItem('currentUser');
 
-            showSuccess('Login realizado com sucesso!', successMsg, successTxt, errorMsg);
-
-            const container = document.querySelector('.container');
-            if (container) container.classList.add('fade-out');
+            showSuccess('Login realizado! Redirecionando...');
 
             setTimeout(() => {
                 window.location.href = 'index.html';
-            }, 1500);
+            }, 600);
         } else {
-            showError('Usuário não encontrado! Faça seu cadastro primeiro.', errorMsg, errorTxt, successMsg);
+            showError('Usuário ou senha incorretos. Verifique ou cadastre-se.');
         }
-    } catch (error) {
-        showError('Erro de conexão. Tente novamente.', errorMsg, errorTxt, successMsg);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = 'Entrar';
-    }
-}
-
-async function checkAutoLogin() {
-    const usuarioLogado = localStorage.getItem('currentUser') ||
-        sessionStorage.getItem('currentUser') ||
-        localStorage.getItem('usuario') ||
-        localStorage.getItem('token');
-
-    if (usuarioLogado) {
-        window.location.href = 'index.html';
-    }
-}
-
-async function loadCourses(courseSelect) {
-    if (!courseSelect) return;
-
-    const mockCourses = ['biomedicina', 'enfermagem', 'psicologia', 'civil', 'administracao', 'contabilidade', 'direito'];
-    courseSelect.innerHTML = '<option value="">Selecione seu curso</option>' +
-        mockCourses.map(c => `<option value="${c}">${c.toUpperCase()}</option>`).join('');
-}
-
-function showError(message, errorMsg, errorTxt, successMsg) {
-    if (errorMsg && errorTxt) {
-        errorTxt.textContent = message;
-        errorMsg.classList.add('show');
-        if (successMsg) successMsg.classList.remove('show');
-        setTimeout(() => errorMsg.classList.remove('show'), 5000);
-    } else alert(message);
-}
-
-function showSuccess(message, successMsg, successTxt, errorMsg) {
-    if (successMsg && successTxt) {
-        successTxt.textContent = message;
-        successMsg.classList.add('show');
-        if (errorMsg) errorMsg.classList.remove('show');
-        setTimeout(() => successMsg.classList.remove('show'), 3000);
-    }
-}
+    });
+});

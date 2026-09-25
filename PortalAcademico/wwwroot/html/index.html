@@ -11,12 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- CSS Principal (Corrigido com ../) -->
+    <!-- CSS Principal -->
     <link rel="stylesheet" href="../css/index.css">
 </head>
 <body>
 
-    <!-- ENGRENAGEM SUPERIOR ESQUERDA (Configurações Rápidas) -->
+    <!-- ENGRENAGEM SUPERIOR DIREITA (Configurações Rápidas) -->
     <div class="top-settings-icon" id="topSettingsBtn" title="Configurações Rápidas">
         <i class="fa-solid fa-gear"></i>
     </div>
@@ -32,7 +32,6 @@
         <div class="sidebar-icon" id="btnTrilhas" title="Trilhas e Cursos">
             <i class="fa-solid fa-book-open"></i>
         </div>
-        <!-- Perfil do Usuário -->
         <div class="sidebar-icon" id="profileSettingsBtn" title="Meu Perfil">
             <i class="fa-solid fa-user"></i>
         </div>
@@ -153,7 +152,6 @@
                     </h4>
                     <p style="margin-top: 4px; color: #64748b;">As trilhas de cálculo e raciocínio lógico já estão disponíveis para todos os cursos de Engenharia.</p>
 
-                    <!-- API 4: BOTAO LEMBRETE GOOGLE AGENDA -->
                     <div style="margin-top: 15px;">
                         <button onclick="adicionarAoGoogleAgenda('Prova de Anatomia', 'Prova presencial no Bloco B', '2026-10-15T14:00:00', '2026-10-15T16:00:00')"
                                 style="background: #4285F4; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
@@ -321,83 +319,8 @@
         </div>
     </div>
 
-    <!-- Script Principal (Corrigido com ../) -->
+    <!-- Script Principal -->
     <script src="../js/index.js"></script>
 
-    <!-- Script Inline da Página -->
-    <script>
-        // VERIFICAÇÃO DE AUTENTICAÇÃO (SESSION GUARD)
-        const storedUserRaw = localStorage.getItem('currentUser');
-
-        if (!storedUserRaw || storedUserRaw === 'null') {
-            window.location.href = 'login.html';
-        }
-
-        let currentUser = JSON.parse(storedUserRaw);
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof initNavigation === 'function') initNavigation();
-            if (typeof initUserProfile === 'function') initUserProfile();
-            if (typeof initTrilhas === 'function') initTrilhas();
-            if (typeof initQuickSettings === 'function') initQuickSettings();
-        });
-
-        // PERFIL & LOGOUT CORRIGIDO
-        function initUserProfile() {
-            updateProfileUI();
-
-            const editBtn = document.getElementById('editProfileBtn');
-            const modal = document.getElementById('editProfileModal');
-            const cancelBtn = document.getElementById('cancelEditProfile');
-            const saveBtn = document.getElementById('saveEditProfile');
-            const logoutBtn = document.getElementById('logoutFromProfileBtn');
-
-            if (editBtn) {
-                editBtn.addEventListener('click', () => {
-                    document.getElementById('editFirstName').value = currentUser.firstName || '';
-                    document.getElementById('editLastName').value = currentUser.lastName || '';
-                    document.getElementById('editEmail').value = currentUser.email || '';
-                    modal.style.display = 'flex';
-                });
-            }
-
-            if (cancelBtn) cancelBtn.addEventListener('click', () => modal.style.display = 'none');
-
-            if (saveBtn) {
-                saveBtn.addEventListener('click', () => {
-                    const fName = document.getElementById('editFirstName').value.trim();
-                    const lName = document.getElementById('editLastName').value.trim();
-                    const email = document.getElementById('editEmail').value.trim();
-                    const pass = document.getElementById('editPassword').value;
-                    const confirmPass = document.getElementById('editConfirmPassword').value;
-
-                    if (pass && pass !== confirmPass) {
-                        alert('As senhas digitadas não coincidem!');
-                        return;
-                    }
-
-                    currentUser.firstName = fName || currentUser.firstName;
-                    currentUser.lastName = lName || currentUser.lastName;
-                    currentUser.fullName = `${currentUser.firstName} ${currentUser.lastName}`;
-                    currentUser.email = email || currentUser.email;
-                    if (pass) currentUser.password = pass;
-
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    updateProfileUI();
-                    modal.style.display = 'none';
-                });
-            }
-
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    localStorage.removeItem('currentUser');
-                    window.location.replace('login.html');
-                });
-            }
-        }
-    </script>
 </body>
 </html>

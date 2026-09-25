@@ -1,9 +1,9 @@
 // ==========================================
-// CADASTRO.JS - INTEGRADO AO BACKEND C#
+// CADASTRO.JS - INTEGRADO AO BACKEND C# E MOCK
 // ==========================================
 
 const API_CONFIG = {
-    USE_MOCK_API: false,
+    USE_MOCK_API: true, // Mude para false quando for conectar ao backend C# real
     REAL_API: {
         BASE_URL: '/api',
         REGISTER: '/alunos',
@@ -11,30 +11,33 @@ const API_CONFIG = {
     }
 };
 
-const elements = {
-    form: document.getElementById('registerForm') || document.getElementById('formCadastro'),
-    firstName: document.getElementById('firstName'),
-    lastName: document.getElementById('lastName'),
-    email: document.getElementById('email'),
-    username: document.getElementById('username'),
-    password: document.getElementById('password') || document.getElementById('senha'),
-    confirmPassword: document.getElementById('confirmPassword'),
-    courseSelect: document.getElementById('courseSelect'),
-    semester: document.getElementById('semester'),
-    acceptTerms: document.getElementById('acceptTerms'),
-    registerBtn: document.getElementById('registerBtn'),
-    errorMessage: document.getElementById('errorMessage'),
-    errorText: document.getElementById('errorText'),
-    successMessage: document.getElementById('successMessage'),
-    successText: document.getElementById('successText')
-};
-
-let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+// Captura os elementos do DOM no momento correto (evita que fiquem 'null')
+function getElements() {
+    return {
+        form: document.getElementById('registerForm') || document.getElementById('formCadastro') || document.querySelector('form'),
+        firstName: document.getElementById('firstName') || document.getElementById('nome'),
+        lastName: document.getElementById('lastName') || document.getElementById('sobrenome'),
+        email: document.getElementById('email') || document.getElementById('regEmail'),
+        username: document.getElementById('username') || document.getElementById('regUser'),
+        password: document.getElementById('password') || document.getElementById('senha') || document.getElementById('regPassword'),
+        confirmPassword: document.getElementById('confirmPassword') || document.getElementById('confirmarSenha'),
+        courseSelect: document.getElementById('courseSelect') || document.getElementById('curso'),
+        semester: document.getElementById('semester') || document.getElementById('periodo'),
+        acceptTerms: document.getElementById('acceptTerms') || document.getElementById('termos'),
+        registerBtn: document.getElementById('registerBtn') || document.querySelector('button[type="submit"]'),
+        errorMessage: document.getElementById('errorMessage') || document.getElementById('feedbackMessage'),
+        errorText: document.getElementById('errorText'),
+        successMessage: document.getElementById('successMessage'),
+        successText: document.getElementById('successText')
+    };
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     loadCourses();
     initEventListeners();
     setupPasswordStrength();
+
+    const elements = getElements();
     if (elements.firstName) elements.firstName.focus();
 });
 
@@ -42,21 +45,32 @@ function loadCourses() {
     const select = elements.courseSelect || document.getElementById('courseSelect');
     if (!select) return;
 
-    // Busca no backend C# e preenche o elemento <select>
-    fetch('/api/cursos')
+    const cursos = ['biomedicina', 'enfermagem', 'psicologia', 'civil', 'administracao', 'contabilidade', 'direito'];
+    select.innerHTML = '<option value="">Selecione seu curso</option>' +
+        cursos.map(c => `<option value="${c}">${c.toUpperCase()}</option>`).join('');
+}
+
+    fetch(`${API_CONFIG.REAL_API.BASE_URL}${API_CONFIG.REAL_API.COURSES}`)
         .then(res => res.json())
         .then(cursos => {
             select.innerHTML = '<option value="">Selecione seu curso</option>';
             cursos.forEach(curso => {
-                select.innerHTML += `<option value="${curso}">${curso}</option>`;
+                select.innerHTML += `<option value="${curso.id || curso}">${curso.nome || curso}</option>`;
             });
         })
-        .catch(error => console.error('Erro ao carregar cursos:', error));
+        .catch(error => {
+            console.error('Erro ao carregar cursos:', error);
+            select.innerHTML = '<option value="">Erro ao carregar cursos</option>';
+        });
 }
 
 function initEventListeners() {
+    const elements = getElements();
+
     if (elements.form) {
         elements.form.addEventListener('submit', handleRegister);
+    } else if (elements.registerBtn) {
+        elements.registerBtn.addEventListener('click', handleRegister);
     }
 
     if (elements.password) {
@@ -70,9 +84,11 @@ function initEventListeners() {
         });
     }
 
-    document.querySelectorAll('.toggle-password').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const target = document.getElementById(btn.getAttribute('data-target'));
+    document.querySelectorAll('.toggle-password, .btn-toggle-eye').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = btn.getAttribute('data-target');
+            const target = targetId ? document.getElementById(targetId) : btn.previousElementSibling;
             if (target) {
                 target.type = target.type === 'password' ? 'text' : 'password';
                 btn.textContent = target.type === 'password' ? '👁️' : '🙈';
@@ -101,6 +117,8 @@ function checkPasswordStrength(password) {
 }
 
 function validateForm() {
+    const elements = getElements();
+
     const firstName = elements.firstName ? elements.firstName.value.trim() : '';
     const email = elements.email ? elements.email.value.trim() : '';
     const password = elements.password ? elements.password.value : '';
@@ -129,17 +147,17 @@ function validateForm() {
         elements.confirmPassword.focus();
         return false;
     }
-    if (!course) {
+    if (elements.courseSelect && !course) {
         showError('Selecione seu curso');
         elements.courseSelect.focus();
         return false;
     }
-    if (!semester) {
+    if (elements.semester && !semester) {
         showError('Selecione seu período');
         elements.semester.focus();
         return false;
     }
-    if (!acceptTerms) {
+    if (elements.acceptTerms && !acceptTerms) {
         showError('Aceite os Termos de Uso');
         return false;
     }
@@ -147,44 +165,67 @@ function validateForm() {
 }
 
 async function handleRegister(event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
     if (!validateForm()) return;
 
     setLoading(true);
+    const elements = getElements();
 
     try {
         if (API_CONFIG.USE_MOCK_API) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 600));
+
+            const emailInput = elements.email ? elements.email.value.trim() : '';
+            const usernameInput = elements.username && elements.username.value.trim() ? elements.username.value.trim() : emailInput;
+
+            // Busca SEMPRE a versão mais recente do LocalStorage
+            let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+
+            // Evita duplicados no Mock
+            const existe = registeredUsers.some(u => u.email.toLowerCase() === emailInput.toLowerCase() || (u.username && u.username.toLowerCase() === usernameInput.toLowerCase()));
+            if (existe) {
+                showError('Usuário ou E-mail já cadastrado!');
+                setLoading(false);
+                return;
+            }
 
             const userData = {
                 id: Date.now(),
-                firstName: elements.firstName.value.trim(),
+                firstName: elements.firstName ? elements.firstName.value.trim() : usernameInput,
                 lastName: elements.lastName ? elements.lastName.value.trim() : '',
-                fullName: `${elements.firstName.value.trim()} ${elements.lastName ? elements.lastName.value.trim() : ''}`,
-                email: elements.email.value.trim(),
-                username: elements.username ? elements.username.value.trim() : elements.email.value.trim(),
-                password: elements.password.value,
-                course: elements.courseSelect.value,
-                semester: elements.semester.value,
+                fullName: `${elements.firstName ? elements.firstName.value.trim() : ''} ${elements.lastName ? elements.lastName.value.trim() : ''}`.trim(),
+                email: emailInput,
+                username: usernameInput,
+                password: elements.password ? elements.password.value : '',
+                course: elements.courseSelect ? elements.courseSelect.value : '',
+                semester: elements.semester ? elements.semester.value : '1',
                 createdAt: new Date().toISOString()
             };
 
+            // Salva na lista do localStorage
             registeredUsers.push(userData);
             localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
 
-            showSuccess(`Cadastro realizado! Bem-vindo(a) ${userData.firstName}!`);
-            setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+            showSuccess(`Cadastro realizado com sucesso! Redirecionando...`);
+
+            // Redireciona para o login.html
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1200);
+
         } else {
-            const nomeCompleto = elements.lastName
+            // --- REAL API C# ---
+            const nomeCompleto = elements.lastName && elements.lastName.value.trim()
                 ? `${elements.firstName.value.trim()} ${elements.lastName.value.trim()}`
-                : elements.firstName.value.trim();
+                : (elements.firstName ? elements.firstName.value.trim() : '');
 
             const alunoData = {
                 Nome: nomeCompleto,
-                Email: elements.email.value.trim(),
-                Senha: elements.password.value,
-                Curso: elements.courseSelect.value,
-                Periodo: parseInt(elements.semester.value)
+                Email: elements.email ? elements.email.value.trim() : '',
+                Usuario: elements.username ? elements.username.value.trim() : '',
+                Senha: elements.password ? elements.password.value : '',
+                Curso: elements.courseSelect ? elements.courseSelect.value : '',
+                Periodo: elements.semester ? parseInt(elements.semester.value) : 1
             };
 
             const response = await fetch(`${API_CONFIG.REAL_API.BASE_URL}${API_CONFIG.REAL_API.REGISTER}`, {
@@ -197,50 +238,59 @@ async function handleRegister(event) {
 
             if (response.ok) {
                 showSuccess(data.mensagem || 'Cadastro realizado com sucesso!');
-                setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+                setTimeout(() => { window.location.href = 'login.html'; }, 1200);
             } else {
                 showError(data.erro || data.message || 'Erro ao realizar cadastro.');
             }
         }
     } catch (error) {
-        showError('Erro de conexão com o servidor C#. Tente novamente.');
+        showError('Erro de conexão com o servidor. Tente novamente.');
     } finally {
         setLoading(false);
     }
 }
 
 function setupPasswordStrength() {
+    const elements = getElements();
     if (elements.password) {
         elements.password.addEventListener('input', (e) => checkPasswordStrength(e.target.value));
     }
 }
 
 function showError(message) {
+    const elements = getElements();
     if (elements.errorText && elements.errorMessage) {
         elements.errorText.textContent = message;
-        elements.errorMessage.classList.add('show');
-        if (elements.successMessage) elements.successMessage.classList.remove('show');
-        setTimeout(() => elements.errorMessage.classList.remove('show'), 4000);
+        elements.errorMessage.style.display = 'block';
+        if (elements.successMessage) elements.successMessage.style.display = 'none';
+    } else if (elements.errorMessage) {
+        elements.errorMessage.textContent = message;
+        elements.errorMessage.style.display = 'block';
     } else {
         alert(message);
     }
 }
 
 function showSuccess(message) {
+    const elements = getElements();
     if (elements.successText && elements.successMessage) {
         elements.successText.textContent = message;
-        elements.successMessage.classList.add('show');
-        if (elements.errorMessage) elements.errorMessage.classList.remove('show');
+        elements.successMessage.style.display = 'block';
+        if (elements.errorMessage) elements.errorMessage.style.display = 'none';
+    } else if (elements.successMessage) {
+        elements.successMessage.textContent = message;
+        elements.successMessage.style.display = 'block';
     } else {
         alert(message);
     }
 }
 
 function setLoading(isLoading) {
+    const elements = getElements();
     if (!elements.registerBtn) return;
 
     if (isLoading) {
-        elements.registerBtn.innerHTML = 'Criando conta <span class="loading"></span>';
+        elements.registerBtn.innerHTML = 'Criando conta...';
         elements.registerBtn.disabled = true;
     } else {
         elements.registerBtn.innerHTML = 'Criar conta';
