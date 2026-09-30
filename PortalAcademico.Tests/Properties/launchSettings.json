@@ -1,5 +1,15 @@
 {
   "profiles": {
+    "PortalAcademico": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "html/login.html",
+      "applicationUrl": "http://localhost:5206",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
     "PortalAcademico.Tests": {
       "commandName": "Project",
       "launchBrowser": true,

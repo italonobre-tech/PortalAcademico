@@ -7,42 +7,30 @@ let currentAdmin = {};
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Inicializando painel do admin...');
 
-    // 1. Verificar se é admin
     const rawUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
     if (!rawUser) {
-        window.location.href = 'login.html';
+        window.location.href = './login.html';
         return;
     }
 
     try {
         currentAdmin = JSON.parse(rawUser);
     } catch (e) {
-        window.location.href = 'login.html';
+        window.location.href = './login.html';
         return;
     }
 
     if (currentAdmin.role !== 'admin') {
-        // Se for aluno tentando acessar admin, manda pro index
-        window.location.href = 'index.html';
+        window.location.href = './index.html';
         return;
     }
 
-    // 2. Navegação
     setupNavigation();
-
-    // 3. Logout
     setupLogout();
 
-    // 4. Painel de configurações
-    if (typeof initSettingsPanel === 'function') {
-        initSettingsPanel();
-    }
-
-    // 5. Carregar dados iniciais
     carregarEstatisticas();
     carregarAlunos();
 
-    // 6. Busca de alunos
     const searchAluno = document.getElementById('searchAluno');
     if (searchAluno) {
         searchAluno.addEventListener('input', (e) => {
@@ -57,9 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ Painel admin inicializado!');
 });
 
-// ==========================================
 // NAVEGAÇÃO
-// ==========================================
 function setupNavigation() {
     const sidebarIcons = document.querySelectorAll('.sidebar-icon');
     const screens = document.querySelectorAll('.screen');
@@ -89,21 +75,14 @@ function setupNavigation() {
                 sidebarIcons.forEach(icon => icon.classList.remove('active'));
                 btn.classList.add('active');
 
-                // Se for tela de estatísticas, recarrega
-                if (btnId === 'btnEstatisticas') {
-                    carregarEstatisticas();
-                }
-                if (btnId === 'btnAlunos') {
-                    carregarAlunos();
-                }
+                if (btnId === 'btnEstatisticas') carregarEstatisticas();
+                if (btnId === 'btnAlunos') carregarAlunos();
             });
         }
     });
 }
 
-// ==========================================
 // LOGOUT
-// ==========================================
 function setupLogout() {
     const logoutBtn = document.getElementById('logoutAdminBtn');
     if (logoutBtn) {
@@ -111,28 +90,23 @@ function setupLogout() {
             if (confirm('Tem certeza que deseja sair do sistema?')) {
                 localStorage.removeItem('currentUser');
                 sessionStorage.removeItem('currentUser');
-                window.location.href = 'login.html';
+                window.location.href = './login.html';
             }
         });
     }
 }
 
-// ==========================================
 // ESTATÍSTICAS
-// ==========================================
 function carregarEstatisticas() {
     const alunos = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
 
-    // Total de alunos
     const elTotal = document.getElementById('statTotalAlunos');
     if (elTotal) elTotal.textContent = alunos.length;
 
-    // Total de cursos
     const totalCursos = (typeof coursesData !== 'undefined') ? Object.keys(coursesData).length : 0;
     const elCursos = document.getElementById('statTotalCursos');
     if (elCursos) elCursos.textContent = totalCursos;
 
-    // Total de disciplinas
     let totalDisciplinas = 0;
     if (typeof coursesData !== 'undefined') {
         for (let c in coursesData) {
@@ -142,13 +116,11 @@ function carregarEstatisticas() {
     const elDisc = document.getElementById('statTotalDisciplinas');
     if (elDisc) elDisc.textContent = totalDisciplinas;
 
-    // Cadastros hoje
     const hoje = new Date().toDateString();
     const cadastrosHoje = alunos.filter(a => a.createdAt && new Date(a.createdAt).toDateString() === hoje).length;
     const elHoje = document.getElementById('statCadastrosHoje');
     if (elHoje) elHoje.textContent = cadastrosHoje;
 
-    // Gráficos
     renderAlunosPorCurso(alunos);
     renderAlunosPorPeriodo(alunos);
     renderCadastrosRecentes(alunos);
@@ -176,9 +148,7 @@ function renderAlunosPorCurso(alunos) {
     container.innerHTML = entries.map(([curso, qtd]) => `
         <div class="bar-item">
             <span class="bar-label">${curso}</span>
-            <div class="bar-track">
-                <div class="bar-fill" style="width: ${(qtd / max) * 100}%"></div>
-            </div>
+            <div class="bar-track"><div class="bar-fill" style="width: ${(qtd / max) * 100}%"></div></div>
             <span class="bar-value">${qtd}</span>
         </div>
     `).join('');
@@ -206,9 +176,7 @@ function renderAlunosPorPeriodo(alunos) {
     container.innerHTML = entries.map(([periodo, qtd]) => `
         <div class="bar-item">
             <span class="bar-label">${periodo}º Período</span>
-            <div class="bar-track">
-                <div class="bar-fill" style="width: ${(qtd / max) * 100}%"></div>
-            </div>
+            <div class="bar-track"><div class="bar-fill" style="width: ${(qtd / max) * 100}%"></div></div>
             <span class="bar-value">${qtd}</span>
         </div>
     `).join('');
@@ -243,9 +211,7 @@ function renderCadastrosRecentes(alunos) {
     }).join('');
 }
 
-// ==========================================
 // LISTA DE ALUNOS
-// ==========================================
 function carregarAlunos() {
     const tbody = document.getElementById('alunosTableBody');
     if (!tbody) return;
@@ -276,9 +242,7 @@ function carregarAlunos() {
     }).join('');
 }
 
-// ==========================================
 // EDITAR ALUNO
-// ==========================================
 window.editarAluno = function (index) {
     const alunos = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
     const aluno = alunos[index];
@@ -321,9 +285,7 @@ window.editarAluno = function (index) {
     };
 };
 
-// ==========================================
 // EXCLUIR ALUNO
-// ==========================================
 window.excluirAluno = function (index) {
     const alunos = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
     const aluno = alunos[index];
