@@ -39,7 +39,6 @@
                 <p>Insira suas credenciais para continuar</p>
             </div>
 
-            <!-- FEEDBACK -->
             <div id="feedbackMessage" class="feedback-message"></div>
 
             <form id="loginForm" class="form-grid">
@@ -78,17 +77,24 @@
         </div>
     </div>
 
-    <!-- Script de Login -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Se já logado, vai pro index
+            // 1. Se já logado, redireciona pro destino certo
             const activeUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
             if (activeUser && activeUser !== 'null' && activeUser !== 'undefined') {
-                window.location.href = 'index.html';
+                try {
+                    const u = JSON.parse(activeUser);
+                    if (u && u.role === 'admin') {
+                        window.location.href = './admin.html';
+                    } else {    
+                        window.location.href = './index.html';
+                    }
+                } catch (e) {
+                    window.location.href = './index.html';
+                }
                 return;
             }
 
-            // 2. Elementos
             const form = document.getElementById('loginForm');
             const usernameInput = document.getElementById('username');
             const passwordInput = document.getElementById('password');
@@ -96,7 +102,6 @@
             const feedbackMsg = document.getElementById('feedbackMessage');
             const togglePassword = document.getElementById('togglePassword');
 
-            // 3. Toggle senha
             const eyeOpen = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>`;
             const eyeClosed = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>`;
             togglePassword.addEventListener('click', () => {
@@ -109,13 +114,11 @@
                 }
             });
 
-            // 4. Feedback
             function showFeedback(text, type) {
                 feedbackMsg.textContent = text;
                 feedbackMsg.className = `feedback-message ${type}`;
             }
 
-            // 5. Submit (SEM curso — pega do cadastro do usuário)
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -126,37 +129,56 @@
                 if (!username) { showFeedback('Preencha o usuário!', 'error'); usernameInput.focus(); return; }
                 if (!password) { showFeedback('Preencha a senha!', 'error'); passwordInput.focus(); return; }
 
+                // 🎯 ADMIN FIXO
+                const isAdmin = (username === 'admin' && password === '123456');
+
+                if (isAdmin) {
+                    loginBtn.disabled = true;
+                    loginBtn.textContent = 'Entrando...';
+
+                    const adminData = {
+                        id: 'admin-001',
+                        firstName: 'Administrador',
+                        lastName: 'do Sistema',
+                        name: 'Administrador',
+                        email: 'admin@portal.com',
+                        username: 'admin',
+                        role: 'admin',
+                        isAdmin: true
+                    };
+
+                    localStorage.setItem('currentUser', JSON.stringify(adminData));
+                    sessionStorage.removeItem('currentUser');
+
+                    showFeedback('Login do Administrador! Redirecionando...', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = './admin.html';
+                    }, 600);
+                    return;
+                }
+
+                // 🎓 ALUNO CADASTRADO
                 const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
                 const foundUser = users.find(u =>
                     (u.username === username || u.email === username) && u.password === password
                 );
 
-                const isAdmin = (username === 'admin' && password === '123456');
-
-                if (foundUser || isAdmin) {
+                if (foundUser) {
                     loginBtn.disabled = true;
                     loginBtn.textContent = 'Entrando...';
 
-                    const userData = foundUser ? {
+                    const userData = {
                         id: foundUser.id,
                         firstName: foundUser.firstName,
                         lastName: foundUser.lastName,
                         name: foundUser.fullName || foundUser.firstName,
                         email: foundUser.email,
                         username: foundUser.username,
-                        course: foundUser.course,                 // ← pega do cadastro
+                        course: foundUser.course,
                         courseName: (foundUser.course || '').toUpperCase(),
-                        semester: foundUser.semester || '1'
-                    } : {
-                        id: Date.now(),
-                        firstName: 'Aluno',
-                        lastName: 'Admin',
-                        name: 'Aluno Admin',
-                        email: 'admin@portal.com',
-                        username: 'admin',
-                        course: 'biomedicina',
-                        courseName: 'BIOMEDICINA',
-                        semester: '1'
+                        semester: foundUser.semester || '1',
+                        role: 'aluno'
                     };
 
                     localStorage.setItem('currentUser', JSON.stringify(userData));
@@ -165,7 +187,7 @@
                     showFeedback('Login realizado! Redirecionando...', 'success');
 
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        window.location.href = './index.html';   // ← ALUNO VAI PRA CÁ!
                     }, 600);
                 } else {
                     showFeedback('Usuário ou senha incorretos. Verifique ou cadastre-se.', 'error');
@@ -173,6 +195,5 @@
             });
         });
     </script>
-
 </body>
 </html>

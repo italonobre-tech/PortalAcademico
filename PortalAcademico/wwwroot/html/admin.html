@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Administrador</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+    <!-- ENGRENAGEM SUPERIOR DIREITA -->
+    <div class="top-settings-icon" id="topSettingsBtn" title="Configurações Rápidas">
+        <i class="fa-solid fa-gear"></i>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-icon active" id="btnHome" title="Visão Geral">
+            <i class="fa-solid fa-chart-pie"></i>
+        </div>
+        <div class="sidebar-icon" id="btnAlunos" title="Gerenciar Alunos">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="sidebar-icon" id="btnEstatisticas" title="Estatísticas">
+            <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div class="sidebar-icon" id="profileSettingsBtn" title="Meu Perfil">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <!-- TELA HOME (VISÃO GERAL) -->
+        <section id="tela-home" class="screen active-screen">
+            <header>
+                <div class="header-title">
+                    <h1><i class="fa-solid fa-shield-halved"></i> Painel do Administrador</h1>
+                </div>
+            </header>
+            <div class="screen-content">
+                <div class="welcome-banner">
+                    <h2 id="welcomeName">Bem-vindo, Administrador! 👋</h2>
+                    <p>Gerencie alunos, visualize estatísticas e mantenha o portal organizado.</p>
+                </div>
+
+                <!-- CARDS DE ESTATÍSTICAS -->
+                <div class="dashboard-cards">
+                    <div class="dash-card stat-card">
+                        <h3><i class="fa-solid fa-users"></i> Total de Alunos</h3>
+                        <p class="dash-number" id="statTotalAlunos">0</p>
+                        <p>Alunos cadastrados no sistema</p>
+                    </div>
+                    <div class="dash-card stat-card">
+                        <h3><i class="fa-solid fa-graduation-cap"></i> Total de Cursos</h3>
+                        <p class="dash-number" id="statTotalCursos">0</p>
+                        <p>Cursos disponíveis no portal</p>
+                    </div>
+                    <div class="dash-card stat-card">
+                        <h3><i class="fa-solid fa-book"></i> Total de Disciplinas</h3>
+                        <p class="dash-number" id="statTotalDisciplinas">0</p>
+                        <p>Disciplinas cadastradas</p>
+                    </div>
+                    <div class="dash-card stat-card">
+                        <h3><i class="fa-solid fa-calendar-day"></i> Cadastros Hoje</h3>
+                        <p class="dash-number" id="statCadastrosHoje">0</p>
+                        <p>Novos alunos hoje</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TELA ALUNOS -->
+        <section id="tela-alunos" class="screen hidden">
+            <header>
+                <div class="header-title">
+                    <h1><i class="fa-solid fa-users"></i> Gerenciar Alunos</h1>
+                    <input type="text" id="searchAluno" class="search-bar" placeholder="Buscar aluno por nome, email ou curso...">
+                </div>
+            </header>
+            <div class="screen-content">
+                <div class="alunos-container">
+                    <table class="alunos-table" id="alunosTable">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Usuário</th>
+                                <th>Curso</th>
+                                <th>Período</th>
+                                <th>Cadastro</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alunosTableBody">
+                            <tr><td colspan="7" style="text-align:center; padding:30px; color:#94a3b8;">Carregando alunos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TELA ESTATÍSTICAS -->
+        <section id="tela-estatisticas" class="screen hidden">
+            <header>
+                <div class="header-title">
+                    <h1><i class="fa-solid fa-chart-line"></i> Estatísticas Detalhadas</h1>
+                </div>
+            </header>
+            <div class="screen-content">
+                <!-- Alunos por Curso -->
+                <div class="stats-panel">
+                    <h3><i class="fa-solid fa-chart-bar"></i> Alunos por Curso</h3>
+                    <div id="alunosPorCurso" class="chart-container">
+                        <p style="color:#94a3b8;">Carregando...</p>
+                    </div>
+                </div>
+
+                <!-- Alunos por Período -->
+                <div class="stats-panel" style="margin-top: 20px;">
+                    <h3><i class="fa-solid fa-layer-group"></i> Alunos por Período</h3>
+                    <div id="alunosPorPeriodo" class="chart-container">
+                        <p style="color:#94a3b8;">Carregando...</p>
+                    </div>
+                </div>
+
+                <!-- Cadastros Recentes -->
+                <div class="stats-panel" style="margin-top: 20px;">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> Últimos Cadastros</h3>
+                    <div id="cadastrosRecentes">
+                        <p style="color:#94a3b8;">Carregando...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TELA PERFIL DO ADMIN -->
+        <section id="tela-perfil" class="screen hidden">
+            <header>
+                <div class="header-title">
+                    <h1><i class="fa-solid fa-user-shield"></i> Meu Perfil</h1>
+                </div>
+            </header>
+            <div class="screen-content">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <div class="avatar-circle" id="avatarLetter" style="background: linear-gradient(135deg, #dc2626, #991b1b);">A</div>
+                        </div>
+                        <h2>Administrador do Sistema</h2>
+                        <p class="profile-username">@admin</p>
+                    </div>
+
+                    <div class="profile-info-grid">
+                        <div class="info-card">
+                            <span class="info-icon"><i class="fa-solid fa-envelope"></i></span>
+                            <div>
+                                <label>E-mail</label>
+                                <p>admin@portal.com</p>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <span class="info-icon"><i class="fa-solid fa-shield"></i></span>
+                            <div>
+                                <label>Nível de Acesso</label>
+                                <p>Administrador</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button class="btn-danger" id="logoutAdminBtn">
+                            <i class="fa-solid fa-right-from-bracket"></i> Sair do Sistema
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="../js/courses-data.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>
